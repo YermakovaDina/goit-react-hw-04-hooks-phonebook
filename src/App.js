@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import Container from './components/Container/Container';
 import Form from './components/Forms/Form';
 import { Filter } from './components/Filters/Filter';
-import { ContactList } from './components/ContactList/ContactList';
+import ContactList from './components/ContactList/ContactList';
 
 import './App.css';
 
