@@ -1,56 +1,77 @@
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
+import { v4 as uuidv4 } from 'uuid';
+
 import Container from './components/Container/Container';
 import Form from './components/Forms/Form';
-import Filter from './components/Filters/Filter';
-import ContactList from './components/ContactList/ContactList';
-//import { v4 as uuidv4 } from 'uuid';
+import { Filter } from './components/Filters/Filter';
+import { ContactList } from './components/ContactList/ContactList';
 
 import './App.css';
 
 export default function App() {
-  // const [initialContacts, setInitialContacts] = useState([]);
-  const initialContacts = [
-    { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-    { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-    { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-    { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-  ];
-
-  const [contacts, setContacts] = useState(() => {
-    return (
-      JSON.parse(window.localStorage.getItem('contacts')) ?? initialContacts
-    );
-  });
+  const [contacts, setContacts] = useState([]);
   const [filter, setFilter] = useState('');
-  //newContactId = uuidv4();
 
-  // //componentDidMount
-  // useEffect(() => {
-  //   const contacts = window.localStorage.getItem('contacts');
-  //   if (contacts) {
-  //     setContacts(JSON.parse(contacts));
-  //   } else setContacts(initialContacts);
-  // }, []);
+  //componentDidMount
+  useEffect(() => {
+    const parsedContacts = JSON.parse(localStorage.getItem('contacts'));
+    if (parsedContacts) {
+      setContacts(parsedContacts);
+    }
+  }, []);
 
   // componentDidUpdate
   useEffect(() => {
-    window.localStorage.setItem('contacts', JSON.stringify(contacts));
+    localStorage.setItem('contacts', JSON.stringify(contacts));
   }, [contacts]);
 
+  // Add the contact
+  // const addContact = data => {
+  //   const someContact = contacts.some(contact =>
+  //     contact.name.includes(data.name),
+  //   );
+  //   if (someContact) {
+  //     return alert(`${data.name} is already in contacts!`);
+  //   }
+  //   return { contacts: [data, ...prevState.contacts] };
+  // };
+
+  //- - -
+  // Add contact
   const addContact = data => {
-    if (contacts.some(contact => contact.name.includes(data.name))) {
-      return alert(`${data.name} is already in contacts!`);
+    // generation id
+    const contactsNew = {
+      id: uuidv4(),
+      ...data,
+    };
+
+    const someContact = contacts.some(
+      contact => contact.name.toLowerCase() === data.name.toLowerCase(),
+    );
+
+    if (someContact) {
+      alert(`${data.name} is already in contacts`);
+      return;
     }
-
-    return { contacts: [data, ...contacts] };
+    //Add the new contact
+    setContacts(prevState => [contactsNew, ...prevState]);
   };
+  //- - -
 
+  // Delete the contact
   const delContact = contactId => {
     setContacts([...contacts.filter(contact => contact.id !== contactId)]);
   };
+  //- - -
+  // const delContacts = (contactsId) => {
+  //     setContacts((contacts) =>
+  //       contacts.filter((contact) => contact.id !== contactsId)
+  //     );
+  // };
+  //- - -
 
   const chengeFilter = e => {
-    setFilter(e.currentTarget.value.toLowerCase());
+    return setFilter(e.currentTarget.value.toLowerCase());
   };
 
   const turnOnFilter = () => {

@@ -1,8 +1,8 @@
 import React from 'react';
-//import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import './ContactList.css';
 
-const ContactList = ({ contacts, delContact }) => {
+const ContactList = ({ contacts, delContact }) => (
   <ul className="list">
     {contacts.map(({ id, name, number }) => (
       <li className="list_item" key={id}>
@@ -19,12 +19,36 @@ const ContactList = ({ contacts, delContact }) => {
         </button>
       </li>
     ))}
-  </ul>;
-};
+  </ul>
+);
 
-// ContactList.propTypes = {
-//   contacts: PropTypes.array,
-//   delContact: PropTypes.func,
+// const ContactList = ({ contacts, delContact }) => {
+//   return (
+//     <ul className="list">
+//       {contacts.map(({ id, name, number }) => {
+//         return (
+//           <li className="list_item" key={id}>
+//             <span>
+//               {name}: {number}
+//             </span>
+//             <button
+//               className="button_list"
+//               type="submit"
+//               id={id}
+//               onClick={() => delContact(id)}
+//             >
+//               Delete
+//             </button>
+//           </li>
+//         );
+//       })}
+//     </ul>
+//   );
 // };
 
-export default ContactList;
+ContactList.propTypes = {
+  contacts: PropTypes.objectOf,
+  delContact: PropTypes.func,
+};
+
+export { ContactList };

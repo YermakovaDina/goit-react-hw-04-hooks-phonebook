@@ -1,3 +1,4 @@
+import React from 'react';
 import PropTypes from 'prop-types';
 import './Filter.css';
 
@@ -24,4 +25,4 @@ Filter.protoType = {
   onChange: PropTypes.func,
 };
 
-export default Filter;
+export { Filter };

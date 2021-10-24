@@ -35,9 +35,6 @@ export default function Form({ onSubmit }) {
     setNumber('');
   };
 
-  // this.props.onSubmit(obj);
-  // this.reset();
-
   return (
     <div className="App">
       <form className="form" onSubmit={handleOnSubmit}>
