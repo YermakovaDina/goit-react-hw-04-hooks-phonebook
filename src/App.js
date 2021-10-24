@@ -1,83 +1,73 @@
-import './App.css';
-import { Component } from 'react';
+import { useEffect, useState } from 'react';
 import Container from './components/Container/Container';
-import Form from './components/Forms/Form-hook';
+import Form from './components/Forms/Form';
 import Filter from './components/Filters/Filter';
 import ContactList from './components/ContactList/ContactList';
-import { v4 as uuidv4 } from 'uuid';
+//import { v4 as uuidv4 } from 'uuid';
 
-class App extends Component {
-  state = {
-    contacts: [],
-    filter: '',
-  };
-  newContactId = uuidv4();
+import './App.css';
 
-  addContact = data => {
-    this.setState(prevState => {
-      if (
-        prevState.contacts.some(contact => contact.name.includes(data.name))
-      ) {
-        return alert(`${data.name} is already in contacts!`);
-      }
+export default function App() {
+  // const [initialContacts, setInitialContacts] = useState([]);
+  const initialContacts = [
+    { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
+    { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
+    { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
+    { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
+  ];
 
-      return { contacts: [data, ...prevState.contacts] };
-    });
-  };
-
-  delContact = contactId => {
-    const state = this.state;
-    const visibleContacts = state.contacts.filter(
-      contact => contact.id !== contactId,
-    );
-    this.setState({ contacts: visibleContacts });
-    return visibleContacts;
-  };
-
-  chengeFilter = e => {
-    this.setState({ filter: e.currentTarget.value.toLowerCase() });
-  };
-
-  //localStorage
-  componentDidMount() {
-    console.log('App componentDidMount');
-
-    const contacts = localStorage.getItem('contacts');
-    const parsedContacts = JSON.parse(contacts);
-
-    if (parsedContacts) {
-      this.setState({ contacts: parsedContacts });
-    }
-  }
-  componentDidUpdate(prevProps, prevState) {
-    console.log('App componentDidMount');
-
-    if (this.state.contacts !== prevState.contacts) {
-      console.log('Обновилось поле contacts');
-
-      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
-    }
-  }
-  //
-
-  render() {
-    const { contacts, filter } = this.state;
-    const visibleContacts = contacts.filter(contact =>
-      contact.name.toLowerCase().includes(filter.toLowerCase()),
-    );
-
+  const [contacts, setContacts] = useState(() => {
     return (
-      <Container>
-        <h1>Phonebook</h1>
-        <Form onSubmit={this.addContact} />
-
-        <h2>Contacts</h2>
-        <Filter value={this.state.filter} onChange={this.chengeFilter} />
-
-        <ContactList contacts={visibleContacts} delContact={this.delContact} />
-      </Container>
+      JSON.parse(window.localStorage.getItem('contacts')) ?? initialContacts
     );
-  }
-}
+  });
+  const [filter, setFilter] = useState('');
+  //newContactId = uuidv4();
 
-export default App;
+  // //componentDidMount
+  // useEffect(() => {
+  //   const contacts = window.localStorage.getItem('contacts');
+  //   if (contacts) {
+  //     setContacts(JSON.parse(contacts));
+  //   } else setContacts(initialContacts);
+  // }, []);
+
+  // componentDidUpdate
+  useEffect(() => {
+    window.localStorage.setItem('contacts', JSON.stringify(contacts));
+  }, [contacts]);
+
+  const addContact = data => {
+    if (contacts.some(contact => contact.name.includes(data.name))) {
+      return alert(`${data.name} is already in contacts!`);
+    }
+
+    return { contacts: [data, ...contacts] };
+  };
+
+  const delContact = contactId => {
+    setContacts([...contacts.filter(contact => contact.id !== contactId)]);
+  };
+
+  const chengeFilter = e => {
+    setFilter(e.currentTarget.value.toLowerCase());
+  };
+
+  const turnOnFilter = () => {
+    return contacts.filter(contact =>
+      contact.name.toLocaleLowerCase().includes(filter),
+    );
+  };
+
+  return (
+    <Container>
+      <h1>Phonebook</h1>
+      <Form onSubmit={addContact} />
+
+      <h2>Contacts</h2>
+      <Filter value={filter} onChange={chengeFilter} />
+
+      <ContactList contacts={turnOnFilter} delContact={delContact} />
+    </Container>
+  );
+}
