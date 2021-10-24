@@ -76,7 +76,7 @@ export default function App() {
 
   const turnOnFilter = () => {
     return contacts.filter(contact =>
-      contact.name.toLocaleLowerCase().includes(filter),
+      contact.name.toLowerCase().includes(filter),
     );
   };
 
@@ -88,7 +88,7 @@ export default function App() {
       <h2>Contacts</h2>
       <Filter value={filter} onChange={chengeFilter} />
 
-      <ContactList contacts={turnOnFilter} delContact={delContact} />
+      <ContactList contacts={turnOnFilter()} delContact={delContact} />
     </Container>
   );
 }
